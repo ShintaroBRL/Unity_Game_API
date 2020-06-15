@@ -1,12 +1,54 @@
-const server = require('http').createServer();
-const io = require('socket.io')(server);
+const io = require('socket.io')(process.env.PORT || 3000);
+var shortid = require('shortid');
 
-server.listen(3000);
+console.log('server started');
 
-console.log ('Server Started');
+var players = [];
 
-io.sockets.on('connection', function(socket){
+io.on('connection', (socket) => {
+  console.log('client Connected');
 
-	console.log ('User connected: ' + socket.id);
+  var thisPlayerId = shortid.generate();
+  
+  var player = {
+    id: thisPlayerId,
+    x:0, 
+    y:0
+  }
 
-});
+  players[thisPlayerId] = player;
+
+  console.log('client conencted id:', thisPlayerId);
+  socket.emit('register', {id: thisPlayerId});
+  socket.broadcast.emit('spawn', {id: thisPlayerId});
+  socket.broadcast.emit('requestPosition' ); 
+
+  for(var playerId in players){
+    if (playerId == thisPlayerId)
+      continue;
+
+    socket.emit('spawn', players[playerId]);
+
+    console.log('sending spawn to new player for id :', playerId);
+  }
+
+  socket.on('move', (data) => {
+    data.id = thisPlayerId;
+    console.log('client moved', JSON.stringify(data));
+
+    player.x = data.x;
+    player.y = data.y;
+    
+    socket.broadcast.emit('move', data);
+
+  });
+
+  socket.on('disconnect', () => {
+    console.log('client Disconnected');
+
+    delete players[thisPlayerId];
+
+    socket.broadcast.emit('disconnected',{id: thisPlayerId});
+  });
+
+})
