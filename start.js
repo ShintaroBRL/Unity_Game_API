@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
   console.log('client conencted id:', thisPlayerId);
   socket.emit('register', {id: thisPlayerId});
   socket.broadcast.emit('spawn', {id: thisPlayerId});
-  socket.broadcast.emit('requestPosition' ); 
+  socket.broadcast.emit('requestPosition' );
 
   for(var playerId in players){
     if (playerId == thisPlayerId)
