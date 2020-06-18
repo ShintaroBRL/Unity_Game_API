@@ -1,7 +1,7 @@
 
 var players = [];
 
-const PlayerController = (soket) => {
+const PlayerController = (socket) => {
 
     var thisPlayerId = shortid.generate();
   
