@@ -49,6 +49,11 @@ const PlayerController = (socket) => {
         socket.broadcast.to(data.room).emit('PlayerDead', data);
     });
 
+    socket.on('PlayerLeaveRoom', (data) =>{
+        data.id = thisPlayerId;
+        socket.broadcast.to(data.room).emit('PlayerLeaveRoom', data);
+    });
+
 }
 
 module.exports = PlayerController
