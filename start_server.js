@@ -1,4 +1,4 @@
-const io = require('socket.io')(process.env.PORT || 3000);
+const io = require('socket.io')(process.env.PORT || 80);
 
 const PlayersController = require("./controllers/PlayersController")
 const RoomsController = require("./controllers/RoomController")
